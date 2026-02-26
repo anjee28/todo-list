@@ -38,6 +38,31 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html.dark {
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-surface-hover: #21253a;
+  --color-border: #2d3148;
+  --color-text: #e8eaf0;
+  --color-text-muted: #8b92a8;
+  --color-primary: #6c63ff;
+  --color-primary-hover: #5a52e0;
+  --color-danger: #f87171;
+  --color-danger-hover: #ef4444;
+  --color-secondary-bg: #272b3d;
+  --color-secondary-hover: #313653;
+
+  --color-priority-high: #2d1a1a;
+  --color-priority-high-border: #7f2e2e;
+  --color-priority-normal: #2d2510;
+  --color-priority-normal-border: #7a5c10;
+  --color-priority-low: #12291a;
+  --color-priority-low-border: #1f6b35;
+
+  --shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 2px 12px rgba(0, 0, 0, 0.2);
+  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
 body {
   margin: 0;
   min-height: 100vh;
