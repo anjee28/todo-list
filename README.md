@@ -1,16 +1,57 @@
-# React + Vite
+# Todo List App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A project-based todo list web app built with React and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Create and manage multiple **projects**
+- Add tasks to each project with:
+  - Task name
+  - Description
+  - Deadline
+  - Priority (Low, Normal, High)
+- Tasks are sorted by priority then deadline
+- Color-coded priority badges and task cards
+- Overdue deadline detection
+- Edit and delete tasks
+- Delete projects (removes all associated tasks)
+- Data persists in `localStorage`
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React 19](https://react.dev/)
+- [Vite](https://vite.dev/)
+- [React Router v7](https://reactrouter.com/)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Project Structure
+
+```
+src/
+├── services/
+│   └── storage.js          # localStorage CRUD (swap this for a backend later)
+├── pages/
+│   ├── ProjectsPage.jsx     # Home — list and create projects
+│   └── ProjectDetailPage.jsx # Tasks view for a project
+├── components/
+│   ├── ProjectCard.jsx
+│   ├── TaskCard.jsx
+│   └── TaskModal.jsx        # Add/edit task form
+├── App.jsx                  # Route definitions
+└── main.jsx                 # App entry point
+```
+
+## Routes
+
+| Path | Page |
+|------|------|
+| `/` | Projects list |
+| `/projects/:id` | Task list for a project |
