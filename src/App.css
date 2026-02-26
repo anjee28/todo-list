@@ -1,3 +1,78 @@
+/* ── Server Check Screen ────────────────────────────────── */
+.server-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.server-screen__card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-modal);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: modal-in 0.2s ease;
+}
+
+.server-screen__card h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.server-screen__card p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.server-screen__card code {
+  background: var(--color-secondary-bg);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.server-screen__card--offline {
+  border-color: var(--color-priority-high-border);
+}
+
+.server-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.server-screen__card .btn {
+  margin-top: 0.5rem;
+}
+
+/* Loading spinner */
+.server-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 0.25rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Layout ─────────────────────────────────────────────── */
 .app {
   min-height: 100vh;

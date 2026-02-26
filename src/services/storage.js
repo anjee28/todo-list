@@ -1,87 +1,55 @@
-const PROJECTS_KEY = 'tdl_projects';
-const TASKS_KEY = 'tdl_tasks';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+async function api(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (res.status === 204) return null;
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error ?? 'Request failed');
+  return data;
 }
 
 // Projects
 export function getProjects() {
-  try {
-    return JSON.parse(localStorage.getItem(PROJECTS_KEY)) ?? [];
-  } catch {
-    return [];
-  }
+  return api('/api/projects');
 }
 
 export function getProject(id) {
-  return getProjects().find((p) => p.id === id) ?? null;
-}
-
-export function saveProject(project) {
-  const projects = getProjects();
-  const existing = projects.findIndex((p) => p.id === project.id);
-  if (existing >= 0) {
-    projects[existing] = project;
-  } else {
-    projects.push({ ...project, id: generateId(), createdAt: new Date().toISOString() });
-  }
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-  return projects;
+  return api('/api/projects').then((projects) => projects.find((p) => p.id === id) ?? null);
 }
 
 export function createProject(name) {
-  const project = { id: generateId(), name, createdAt: new Date().toISOString() };
-  const projects = getProjects();
-  projects.push(project);
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-  return project;
+  return api('/api/projects', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+  });
 }
 
 export function deleteProject(id) {
-  const projects = getProjects().filter((p) => p.id !== id);
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-  const tasks = getTasks().filter((t) => t.projectId !== id);
-  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  return api(`/api/projects/${id}`, { method: 'DELETE' });
 }
 
 // Tasks
-export function getTasks(projectId = null) {
-  try {
-    const tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) ?? [];
-    return projectId ? tasks.filter((t) => t.projectId === projectId) : tasks;
-  } catch {
-    return [];
-  }
+export function getTasks(projectId) {
+  return api(`/api/projects/${projectId}/tasks`);
 }
 
 export function createTask({ projectId, name, description, deadline, priority }) {
-  const task = {
-    id: generateId(),
-    projectId,
-    name,
-    description,
-    deadline,
-    priority,
-    createdAt: new Date().toISOString(),
-  };
-  const tasks = getTasks();
-  tasks.push(task);
-  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
-  return task;
+  return api('/api/tasks', {
+    method: 'POST',
+    body: JSON.stringify({ projectId, name, description, deadline, priority }),
+  });
 }
 
 export function updateTask(updated) {
-  const tasks = getTasks();
-  const idx = tasks.findIndex((t) => t.id === updated.id);
-  if (idx >= 0) {
-    tasks[idx] = updated;
-    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
-  }
-  return tasks;
+  return api(`/api/tasks/${updated.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(updated),
+  });
 }
 
 export function deleteTask(id) {
-  const tasks = getTasks().filter((t) => t.id !== id);
-  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  return api(`/api/tasks/${id}`, { method: 'DELETE' });
 }

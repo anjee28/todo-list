@@ -1,30 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getProjects, createProject, deleteProject } from '../services/storage';
 import ProjectCard from '../components/ProjectCard';
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState(() => getProjects());
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState('');
   const [error, setError] = useState('');
   const [adding, setAdding] = useState(false);
 
-  function handleAdd(e) {
+  useEffect(() => {
+    getProjects()
+      .then(setProjects)
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleAdd(e) {
     e.preventDefault();
     const trimmed = newName.trim();
     if (!trimmed) {
       setError('Project name is required.');
       return;
     }
-    createProject(trimmed);
-    setProjects(getProjects());
+    await createProject(trimmed);
+    setProjects(await getProjects());
     setNewName('');
     setAdding(false);
     setError('');
   }
 
-  function handleDelete(id) {
-    deleteProject(id);
-    setProjects(getProjects());
+  async function handleDelete(id) {
+    await deleteProject(id);
+    setProjects(await getProjects());
   }
 
   return (
@@ -59,7 +66,9 @@ export default function ProjectsPage() {
         </form>
       )}
 
-      {projects.length === 0 ? (
+      {loading ? (
+        <div className="empty-state"><p>Loading...</p></div>
+      ) : projects.length === 0 ? (
         <div className="empty-state">
           <p>No projects yet.</p>
           <p>Create one to get started!</p>

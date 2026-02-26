@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProject, getTasks, createTask, updateTask, deleteTask } from '../services/storage';
 import TaskCard from '../components/TaskCard';
@@ -19,21 +19,27 @@ function sortTasks(tasks) {
 export default function ProjectDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const project = getProject(id);
 
-  const [tasks, setTasks] = useState(() => sortTasks(getTasks(id)));
+  const [project, setProject] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
-  if (!project) {
-    return (
-      <div className="page">
-        <div className="empty-state">
-          <p>Project not found.</p>
-          <button className="btn btn--primary" onClick={() => navigate('/')}>Back to Projects</button>
-        </div>
-      </div>
-    );
+  useEffect(() => {
+    Promise.all([getProject(id), getTasks(id)])
+      .then(([proj, taskList]) => {
+        if (!proj) { setNotFound(true); return; }
+        setProject(proj);
+        setTasks(sortTasks(taskList));
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  async function refreshTasks() {
+    const taskList = await getTasks(id);
+    setTasks(sortTasks(taskList));
   }
 
   function openAddModal() {
@@ -46,20 +52,35 @@ export default function ProjectDetailPage() {
     setModalOpen(true);
   }
 
-  function handleSave(formData) {
+  async function handleSave(formData) {
     if (editingTask) {
-      updateTask({ ...editingTask, ...formData });
+      await updateTask({ ...editingTask, ...formData });
     } else {
-      createTask({ ...formData, projectId: id });
+      await createTask({ ...formData, projectId: id });
     }
-    setTasks(sortTasks(getTasks(id)));
+    await refreshTasks();
     setModalOpen(false);
     setEditingTask(null);
   }
 
-  function handleDelete(taskId) {
-    deleteTask(taskId);
-    setTasks(sortTasks(getTasks(id)));
+  async function handleDelete(taskId) {
+    await deleteTask(taskId);
+    await refreshTasks();
+  }
+
+  if (loading) {
+    return <div className="page"><div className="empty-state"><p>Loading...</p></div></div>;
+  }
+
+  if (notFound) {
+    return (
+      <div className="page">
+        <div className="empty-state">
+          <p>Project not found.</p>
+          <button className="btn btn--primary" onClick={() => navigate('/')}>Back to Projects</button>
+        </div>
+      </div>
+    );
   }
 
   return (

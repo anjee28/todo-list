@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
+import ServerCheck from './components/ServerCheck'
 import './App.css'
 
 function getInitialTheme() {
@@ -20,11 +21,13 @@ export default function App() {
 
   return (
     <div className="app">
-      <Routes>
-        <Route path="/" element={<ProjectsPage />} />
-        <Route path="/projects/:id" element={<ProjectDetailPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ServerCheck>
+        <Routes>
+          <Route path="/" element={<ProjectsPage />} />
+          <Route path="/projects/:id" element={<ProjectDetailPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ServerCheck>
 
       <button
         className="theme-toggle"
