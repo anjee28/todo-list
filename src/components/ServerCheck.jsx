@@ -34,7 +34,7 @@ export default function ServerCheck({ children }) {
         <div className="server-screen__card server-screen__card--offline">
           <div className="server-icon" aria-hidden="true">⚡</div>
           <h2>Server Offline</h2>
-          <p>Could not connect to the backend server at <code>{BASE_URL}</code>.</p>
+          <p>Could not connect to the backend server.</p>
           <p>Make sure the server is running, then try again.</p>
           <button className="btn btn--primary" onClick={check}>
             Retry
